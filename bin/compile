@@ -183,11 +183,12 @@ if [[ -z "$USE_NPM_INSTALL" ]] && [[ $(features_get_with_blank "use-npm-ci") == 
 fi
 
 install_bins() {
-  local node_engine npm_engine yarn_engine npm_version node_version
+  local node_engine npm_engine yarn_engine npm_version node_version jvm_engine jvm_version
 
   node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
   npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
   yarn_engine=$(read_json "$BUILD_DIR/package.json" ".engines.yarn")
+  jvm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.jvm")
 
   if [[ "$YARN_2" == "true" && -n "$yarn_engine" ]]; then
     warn "You don't need to specify Yarn engine. Heroku will install the latest Yarn 1.x, so that per project version can be used. More information here: https://yarnpkg.com/getting-started/install#global-install"
@@ -197,12 +198,14 @@ install_bins() {
   meta_set "node-version-request" "$node_engine"
   meta_set "npm-version-request" "$npm_engine"
   meta_set "yarn-version-request" "$yarn_engine"
+  meta_set "jvm-version-request" "$jvm_engine"
 
   echo "engines.node (package.json):  ${node_engine:-unspecified}"
   echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
   if $YARN || [ -n "$yarn_engine" ]; then
     echo "engines.yarn (package.json):  ${yarn_engine:-unspecified (use default)}"
   fi
+  echo "engines.jvm (package.json):   ${jvm_engine:-unspecified (use default)}"
   echo ""
 
   warn_node_engine "$node_engine"
@@ -212,6 +215,9 @@ install_bins() {
 
   meta_set "build-step" "install-npm"
   monitor "install-npm-binary" install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK
+  
+  meta_set "build-step" "install-jvm"
+  monitor "install-jvm-binary" install_jdk "$jvm_engine" "$BUILD_DIR/.heroku/jvm" $CACHE_DIR
 
   node_version="$(node --version)"
   mcount "version.node.$node_version"
@@ -232,6 +238,10 @@ install_bins() {
     mcount "version.npm.$(npm --version)"
     meta_set "npm-version" "$(npm --version)"
   fi
+  
+  jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "(.+)"/\1/g')"
+  mcount "version.jvm,.$jvm_version"
+  meta_set "jvm-version" "$jvm_version"
 
   warn_old_npm
 
