@@ -18,7 +18,7 @@ error() {
 }
 
 if [ -f "$1/package.json" ]; then
-  echo 'Node.js'
+  echo 'BaseX'
   exit 0
 fi
 

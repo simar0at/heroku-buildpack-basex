@@ -866,7 +866,7 @@ testUserConfig() {
 
 testDefaultProcType() {
   release "stable-node"
-  assertCaptured "web: npm start"
+  assertCaptured "web: /app/.heroku/basex/bin/basexhttp"
   assertCapturedSuccess
 }
 

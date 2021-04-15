@@ -167,3 +167,14 @@ install_jdk() {
   BP_JVM_VERSION=$version install_java_with_overlay "${install_dir}" "${cache_dir}"
   mtime "jvm.install.time" "${start}"
 }
+
+install_basex() {
+  local version=${1:-9.5.1}
+  local install_dir=${2}
+  local basexzip=BaseX${version//.}.zip
+
+  echo "-----> Downloading and installing BaseX $version..."
+  curl --retry 3 --silent --location "https://files.basex.org/releases/${version}/${basexzip}" --output "/tmp/${basexzip}"
+  rm -rf "${install_dir}/basex"
+  unzip -q -d "${install_dir}" "/tmp/${basexzip}"
+}

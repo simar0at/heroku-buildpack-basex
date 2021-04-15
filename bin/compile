@@ -11,7 +11,7 @@ unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
 
 # This is used by the buildpack stdlib for metrics
 # shellcheck disable=SC2034
-BPLOG_PREFIX="buildpack.nodejs"
+BPLOG_PREFIX="buildpack.basex"
 
 ### Configure directories
 
@@ -183,12 +183,13 @@ if [[ -z "$USE_NPM_INSTALL" ]] && [[ $(features_get_with_blank "use-npm-ci") == 
 fi
 
 install_bins() {
-  local node_engine npm_engine yarn_engine npm_version node_version jvm_engine jvm_version
+  local node_engine npm_engine yarn_engine npm_version node_version jvm_engine jvm_version basex_engine basex_version
 
   node_engine=$(read_json "$BUILD_DIR/package.json" ".engines.node")
   npm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.npm")
   yarn_engine=$(read_json "$BUILD_DIR/package.json" ".engines.yarn")
   jvm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.jvm")
+  basex_engine=$(read_json "$BUILD_DIR/package.json" ".engines.basex")
 
   if [[ "$YARN_2" == "true" && -n "$yarn_engine" ]]; then
     warn "You don't need to specify Yarn engine. Heroku will install the latest Yarn 1.x, so that per project version can be used. More information here: https://yarnpkg.com/getting-started/install#global-install"
@@ -199,6 +200,7 @@ install_bins() {
   meta_set "npm-version-request" "$npm_engine"
   meta_set "yarn-version-request" "$yarn_engine"
   meta_set "jvm-version-request" "$jvm_engine"
+  meta_set "basex-version-request" "$basex_engine"
 
   echo "engines.node (package.json):  ${node_engine:-unspecified}"
   echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
@@ -206,6 +208,7 @@ install_bins() {
     echo "engines.yarn (package.json):  ${yarn_engine:-unspecified (use default)}"
   fi
   echo "engines.jvm (package.json):   ${jvm_engine:-unspecified (use default)}"
+  echo "engines.basex (package.json):   ${basex_engine:-unspecified (use default)}"
   echo ""
 
   warn_node_engine "$node_engine"
@@ -217,7 +220,10 @@ install_bins() {
   monitor "install-npm-binary" install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK
   
   meta_set "build-step" "install-jvm"
-  monitor "install-jvm-binary" install_jdk "$jvm_engine" "$BUILD_DIR/.heroku/jvm" $CACHE_DIR
+  monitor "install-jvm-binary" install_jdk "$jvm_engine" "$BUILD_DIR" $CACHE_DIR
+  
+  meta_set "build-step" "install-basex"
+  monitor "install-basex-binary" install_basex "$basex_engine" "$BUILD_DIR/.heroku" $CACHE_DIR
 
   node_version="$(node --version)"
   mcount "version.node.$node_version"
@@ -238,16 +244,31 @@ install_bins() {
     mcount "version.npm.$(npm --version)"
     meta_set "npm-version" "$(npm --version)"
   fi
-  
-  jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "(.+)"/\1/g')"
-  mcount "version.jvm,.$jvm_version"
-  meta_set "jvm-version" "$jvm_version"
 
   warn_old_npm
 
   if [[ $YARN_2 == true ]]; then
     YARN=false
   fi
+  
+  export JAVA_HOME=$BUILD_DIR/.jdk
+  export PATH=$PATH:$JAVA_HOME/bin
+  export PORT=${PORT:-3000}
+
+  jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "([^ ]+)"/\1/g')"
+  mcount "version.jvm.$jvm_version"
+  meta_set "jvm-version" "$jvm_version"
+  
+  bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" "-h$PORT" >/dev/null 2>&1 &
+  sleep 0.5
+  curl --connect-timeout 20 -s -D - "http://localhost:$PORT" -o /dev/null 2>/dev/null | head -n1 | grep -q 200 || exit 1
+  basex_version=$($BUILD_DIR/.heroku/basex/bin/basexclient -Uadmin -Padmin \
+  'db:system()/generalinformation/version/text()')
+  mcount "version.basex.$basex_version"
+  meta_set "basex-version" "$basex_version"
+  echo "Installed BaseX Version: $basex_version"
+  $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
+
 }
 
 header "Installing binaries" | output "$LOG_FILE"
@@ -405,7 +426,6 @@ summarize_build | output "$LOG_FILE"
 meta_set "node-build-success" "true"
 meta_time "build-time" "$build_start_time"
 
-warn_no_start "$BUILD_DIR"
 warn_unmet_dep "$LOG_FILE"
 warn_old_npm_lockfile $NPM_LOCK
 
