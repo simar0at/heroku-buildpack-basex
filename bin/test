@@ -12,5 +12,5 @@ else
 fi
 testResult=$?
 
-"$BUILD_DIR/.heroku/basex/bin/basexhttpstop"
-exit testResult
+"$BUILD_DIR/.heroku/basex/bin/basexhttpstop" 2>&1 | grep 'was stopped'
+exit $testResult
