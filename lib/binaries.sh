@@ -174,7 +174,7 @@ install_basex() {
   local basexzip=BaseX${version//.}.zip
 
   echo "-----> Downloading and installing BaseX $version..."
-  curl --retry 3 --silent --location "https://files.basex.org/releases/${version}/${basexzip}" --output "/tmp/${basexzip}"
+  curl --retry 3 --location -s "https://files.basex.org/releases/${version}/${basexzip}" --output "/tmp/${basexzip}"
   rm -rf "${install_dir}/basex"
-  unzip -q -d "${install_dir}" "/tmp/${basexzip}"
+  unzip -q -d "${install_dir}" "/tmp/${basexzip}" && echo -n "Installed"
 }
