@@ -178,3 +178,9 @@ install_basex() {
   rm -rf "${install_dir}/basex"
   unzip -q -d "${install_dir}" "/tmp/${basexzip}" && echo -n "Installed"
 }
+
+install_saxon() {
+  local version=${1:-10.3}
+  local install_dir=${2}
+  curl --retry 3 --location -s "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/{$version}/Saxon-HE-${version}.jar" --output "${install_dir}/lib/custom/Saxon-HE-${version}.jar"
+}

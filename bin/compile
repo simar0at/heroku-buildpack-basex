@@ -190,6 +190,7 @@ install_bins() {
   yarn_engine=$(read_json "$BUILD_DIR/package.json" ".engines.yarn")
   jvm_engine=$(read_json "$BUILD_DIR/package.json" ".engines.jvm")
   basex_engine=$(read_json "$BUILD_DIR/package.json" ".engines.basex")
+  saxon_engine=$(read_json "$BUILD_DIR/package.json" ".engines.saxon")
 
   if [[ "$YARN_2" == "true" && -n "$yarn_engine" ]]; then
     warn "You don't need to specify Yarn engine. Heroku will install the latest Yarn 1.x, so that per project version can be used. More information here: https://yarnpkg.com/getting-started/install#global-install"
@@ -201,6 +202,7 @@ install_bins() {
   meta_set "yarn-version-request" "$yarn_engine"
   meta_set "jvm-version-request" "$jvm_engine"
   meta_set "basex-version-request" "$basex_engine"
+  meta_set "saxon-version-request" "$saxon_engine"
 
   echo "engines.node (package.json):  ${node_engine:-unspecified}"
   echo "engines.npm (package.json):   ${npm_engine:-unspecified (use default)}"
@@ -209,6 +211,9 @@ install_bins() {
   fi
   echo "engines.jvm (package.json):   ${jvm_engine:-unspecified (use default)}"
   echo "engines.basex (package.json):   ${basex_engine:-unspecified (use default)}"
+  if [ -n "$saxon_engine" ]; then
+    echo "engines.saxon (package.json):   ${saxon_engine:-unspecified (use default)}"
+  fi
   echo ""
 
   warn_node_engine "$node_engine"
@@ -224,6 +229,11 @@ install_bins() {
   
   meta_set "build-step" "install-basex"
   monitor "install-basex-binary" install_basex "$basex_engine" "$BUILD_DIR/.heroku" $CACHE_DIR
+  
+  if [ -n "$saxon_engine" ]; then
+    meta_set "build-step" "install-saxon"
+    monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex" $CACHE_DIR
+  fi
 
   node_version="$(node --version)"
   mcount "version.node.$node_version"
@@ -259,13 +269,18 @@ install_bins() {
   mcount "version.jvm.$jvm_version"
   meta_set "jvm-version" "$jvm_version"
   
-  bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" "-h$PORT" >/dev/null 2>&1 &
+  pushd "$BUILD_DIR/.heroku/basex/bin" >/dev/null
+  bash basexhttp "-h$PORT" >/dev/null 2>&1 &
+  popd >/dev/null
   curl --connect-timeout 5 --max-time 10 --retry 3 --retry-delay 0  --retry-max-time 40 --retry-connrefused 1 -s -D - "http://localhost:$PORT" -o /dev/null 2>/dev/null | head -n1 | grep -q 200 || (pkill -TERM java; exit 1)
   basex_version=$($BUILD_DIR/.heroku/basex/bin/basexclient -Uadmin -Padmin \
   'db:system()/generalinformation/version/text()')
   mcount "version.basex.$basex_version"
   meta_set "basex-version" "$basex_version"
   echo " BaseX Version: $basex_version"
+  if [ -x $BUILD_DIR/deployment/initial.sh ]; then
+    exec $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
+  else
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
 }
