@@ -1,15 +1,12 @@
-# Heroku Buildpack for Node.js
+# Heroku Buildpack for BaseX
 
-![nodejs](https://cloud.githubusercontent.com/assets/51578/13712672/efdf2a40-e792-11e5-82ef-492478cbc0dc.png)
-
-This is the official [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for Node.js apps.
-
-[![CircleCI](https://circleci.com/gh/heroku/heroku-buildpack-nodejs/tree/main.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildpack-nodejs)
-
+This is a 3rd party Heroku buildpack for BaseX based apps. It is based on the node.js buildpack and the common jvm parts used in Java buildpacks.
 ## Documentation
 
 For more information about using this Node.js buildpack on Heroku, see these Dev Center articles:
 
+- [Basex](https://www.basex.org)
+- [Heroku Buildpack for the JDK](https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-jvm-common)
 - [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
 - [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/nodejs)
 - [Troubleshooting Node.js Deploys](https://devcenter.heroku.com/articles/troubleshooting-node-deploys)
@@ -19,17 +16,11 @@ For more general information about buildpacks on Heroku:
 - [Buildpacks](https://devcenter.heroku.com/articles/buildpacks)
 - [Buildpack API](https://devcenter.heroku.com/articles/buildpack-api)
 
-## Using the Heroku Node.js buildpack
+## Using the Heroku BaseX buildpack
 
 It's suggested that you use the latest version of the release buildpack. You can set it using the `heroku-cli`.
 
-```sh
-heroku buildpacks:set heroku/nodejs
-```
-
-Your builds will always used the latest published release of the buildpack.
-
-If you need to use the git url, you can use the `latest` tag to make sure you always have the latest release. **The `main` branch will always have the latest buildpack updates, but it does not correspond with a numbered release.**
+You need to use the git url. You can use the `latest` tag to make sure you always have the latest release. **The `main` branch will always have the latest buildpack updates, but it does not correspond with a numbered release.**
 
 ```sh
 heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a my-app
