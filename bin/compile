@@ -280,7 +280,7 @@ install_bins() {
   echo " BaseX Version: $basex_version"
   if [ -x $BUILD_DIR/deployment/initial.sh ]; then
     exec $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
-  else
+  fi
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
 }
