@@ -229,7 +229,7 @@ install_bins() {
   
   meta_set "build-step" "install-basex"
   monitor "install-basex-binary" install_basex "$basex_engine" "$BUILD_DIR/.heroku" $CACHE_DIR
-  
+  set -x
   if [ -n "$saxon_engine" ]; then
     meta_set "build-step" "install-saxon"
     monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex" $CACHE_DIR
@@ -283,6 +283,7 @@ install_bins() {
   fi
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
+  set +x
 }
 
 header "Installing binaries" | output "$LOG_FILE"
