@@ -271,7 +271,7 @@ install_bins() {
   
   set -x
   pushd "$BUILD_DIR/.heroku/basex/bin" # >/dev/null
-  bash ./basexhttp "-h$PORT"  & # >/dev/null 2>&1
+  bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" -h "$PORT"  & # >/dev/null 2>&1
   curl --connect-timeout 5 --max-time 10 --retry 3 --retry-delay 0  --retry-max-time 40 --retry-connrefused 1 -s -D - "http://localhost:$PORT" -o /dev/null 2>/dev/null | head -n1 | grep -q 200 || (pkill -TERM java; exit 1)
   basex_version=$($BUILD_DIR/.heroku/basex/bin/basexclient -Uadmin -Padmin \
   'db:system()/generalinformation/version/text()')
