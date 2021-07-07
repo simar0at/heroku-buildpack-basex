@@ -269,22 +269,21 @@ install_bins() {
   mcount "version.jvm.$jvm_version"
   meta_set "jvm-version" "$jvm_version"
   
-  set -x
-  pushd "$BUILD_DIR/.heroku/basex/bin" # >/dev/null
-  bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" -h "$PORT"  & # >/dev/null 2>&1
+  pushd "$BUILD_DIR/.heroku/basex/bin" >/dev/null
+  bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" -h "$PORT" >/dev/null 2>&1 &
+  sleep 1
   curl --connect-timeout 5 --max-time 10 --retry 3 --retry-delay 0  --retry-max-time 40 --retry-connrefused 1 -s -D - "http://localhost:$PORT" -o /dev/null 2>/dev/null | head -n1 | grep -q 200 || (pkill -TERM java; exit 1)
   basex_version=$($BUILD_DIR/.heroku/basex/bin/basexclient -Uadmin -Padmin \
   'db:system()/generalinformation/version/text()')
   mcount "version.basex.$basex_version"
   meta_set "basex-version" "$basex_version"
   echo " BaseX Version: $basex_version"
-  popd # >/dev/null
+  popd >/dev/null
   if [ -x $BUILD_DIR/deployment/initial.sh ]; then
     BUILD_DIR=$BUILD_DIR $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
   fi
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
-  set +x
 }
 
 header "Installing binaries" | output "$LOG_FILE"
