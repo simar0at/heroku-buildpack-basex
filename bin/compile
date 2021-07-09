@@ -284,7 +284,7 @@ install_bins() {
   fi
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
-  sed -i "s~$BUILD_DIR~/app~/" $BUILD_DIR/.heroku/basex/.basex
+  sed -i "s~$BUILD_DIR~/app~" $BUILD_DIR/.heroku/basex/.basex
 }
 
 header "Installing binaries" | output "$LOG_FILE"
