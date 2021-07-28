@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # bin/release <build-dir>
 
-echo Release phase running...
-
 cat << EOF
 addons: []
 default_process_types:
