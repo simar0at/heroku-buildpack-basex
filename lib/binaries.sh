@@ -149,7 +149,7 @@ install_npm() {
 }
 
 install_jdk() {
-  local version=${1:-11}
+  local version=zulu-${1:-11}
   local install_dir=${2}
   local cache_dir=${3}
 
@@ -158,6 +158,7 @@ install_jdk() {
   JVM_COMMON_BUILDPACK=${JVM_COMMON_BUILDPACK:-https://buildpack-registry.s3.amazonaws.com/buildpacks/heroku/jvm.tgz}
   mkdir -p /tmp/jvm-common
   curl --retry 3 --silent --location $JVM_COMMON_BUILDPACK | tar xzm -C /tmp/jvm-common --strip-components=1
+  patch /tmp/jvm-common/lib/jvm.sh "$BP_DIR/lib/jvm.sh.patch"
   source /tmp/jvm-common/bin/util
   source /tmp/jvm-common/bin/java
   source /tmp/jvm-common/opt/jdbc.sh
