@@ -40,3 +40,4 @@
  fi
  
  if echo "${JAVA_OPTS:-}" | grep -q "\-Xmx"; then
+ 

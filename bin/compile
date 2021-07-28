@@ -265,7 +265,7 @@ install_bins() {
   export PATH=$PATH:$JAVA_HOME/bin
   export PORT=${PORT:-3000}
 
-  patch -p0 < "$BP_DIR/inventory/jvmcommon.sh.patch"
+  patch "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/inventory/jvmcommon.sh.patch"
 
   jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "([^ ]+)"/\1/g')"
   mcount "version.jvm.$jvm_version"
