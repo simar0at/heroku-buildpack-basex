@@ -149,7 +149,7 @@ install_npm() {
 }
 
 install_jdk() {
-  local version=zulu-${1:-11}
+  local version=${1:-11}
   local install_dir=${2}
   local cache_dir=${3}
 
