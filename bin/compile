@@ -306,7 +306,7 @@ install_bins() {
   fi
   # move restxq.xqm if the source does not provides a %rest:path('') route
   grep -R '%rest:path.'\'\''.$' $BUILD_DIR/* 2>&1 > /dev/null || ROOT_REST_PATH_NOT_FOUND=$?
-  if [ "$ROOT_REST_PATH_NOT_FOUND" = "1" -a ! -f $BUILD_DIR/restxq.xqm]
+  if [ "$ROOT_REST_PATH_NOT_FOUND" = "1" -a ! -f $BUILD_DIR/restxq.xqm ]
   then
     mv $BUILD_DIR/.heroku/basex/webapp/restxq.xqm $BUILD_DIR/restxq.xqm
   else
