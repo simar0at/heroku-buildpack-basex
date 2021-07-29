@@ -33,7 +33,7 @@
  
  if [ -f "$JAVA_HOME/release" ] && grep -q '^JAVA_VERSION="1[0-9]' "$JAVA_HOME/release"; then
 -  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport")"
-+  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:MaxRAMFraction=1 -XX:+ExitOnOutOfMemoryError")"
++  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError")"
  else
 -  default_java_mem_opts="$(calculate_java_memory_opts | sed 's/^ //')"
 +  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport -XX:+UseG1GC -XX:+UseStringDeduplication" | sed 's/^ //')"
