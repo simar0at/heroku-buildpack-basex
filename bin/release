@@ -4,5 +4,5 @@
 cat << EOF
 addons: []
 default_process_types:
-  web: copy-basex-data-if-empty /app && (set-basex-admin-password /app 2; basexhttp -h "\$PORT")
+  web: setup-and-start-basexhttp /app
 EOF
