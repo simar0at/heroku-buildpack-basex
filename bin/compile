@@ -283,7 +283,6 @@ install_bins() {
   meta_set "basex-version" "$basex_version"
   echo " BaseX Version: $basex_version"
   popd >/dev/null
-  set -x
   if [ -x $BUILD_DIR/deployment/initial.sh ]; then
     BUILD_DIR=$BUILD_DIR $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
   fi
@@ -299,21 +298,21 @@ install_bins() {
   else
     rm -rf $BUILD_DIR/.heroku/basex/webapp/dba
   fi
-  #if [ -d $BUILD_DIR/static -a -z "$(ls -A $BUILD_DIR/static 2>/dev/null)" ]
-  #then
-  #  cp -ra $BUILD_DIR/.heroku/basex/webapp/static/. $BUILD_DIR/static
-  #else
-  #  rm -rf $BUILD_DIR/.heroku/basex/webapp/static
-  #fi
+  if [ -d $BUILD_DIR/static -a -z "$(ls -A $BUILD_DIR/static 2>/dev/null)" ]
+  then
+    cp -ra $BUILD_DIR/.heroku/basex/webapp/static/. $BUILD_DIR/static
+  else
+    rm -rf $BUILD_DIR/.heroku/basex/webapp/static
+  fi
   # move restxq.xqm if the source does not provides a %rest:path('') route
-  #grep -R '%rest:path.'\'\''.$' * 2>&1 > /dev/null
-  #if [ "$?" = "1" -a ! -f $BUILD_DIR/restxq.xqm]
-  #then
-  #  mv $BUILD_DIR/.heroku/basex/webapp/restxq.xqm $BUILD_DIR/restxq.xqm
-  #else
-  #  rm $BUILD_DIR/.heroku/basex/webapp/restxq.xqm
-  #fi
-  #rm -rf $BUILD_DIR/.heroku/basex/webapp/[a-z]*
+  grep -R '%rest:path.'\'\''.$' * 2>&1 > /dev/null || $ROOT_REST_PATH_NOT_FOUND=$?
+  if [ $ROOT_REST_PATH_NOT_FOUND = "1" -a ! -f $BUILD_DIR/restxq.xqm]
+  then
+    mv $BUILD_DIR/.heroku/basex/webapp/restxq.xqm $BUILD_DIR/restxq.xqm
+  else
+    rm $BUILD_DIR/.heroku/basex/webapp/restxq.xqm
+  fi
+  rm -rf $BUILD_DIR/.heroku/basex/webapp/[a-z]*
 }
 
 header "Installing binaries" | output "$LOG_FILE"
