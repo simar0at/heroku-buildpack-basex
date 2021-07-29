@@ -26,6 +26,19 @@ You need to use the git url. You can use the `latest` tag to make sure you alway
 heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a my-app
 ```
 
+## The admin password for BaseX
+
+This buildpack does not use the standard `admin` password. Instead a randomly generated password is set.
+
+- If you have a persistent data directory the admin password is stored in this directory. So it does not change.
+- If you don't interact with the BaseX database in the container using `basexclient` or the dba BaseX app
+  this does not matter to you. RestXQ apps for example run as admin user without needing to know the password.
+- If you need the password it is stored in a text file within the container: `/app/.heroku/basex/credentials`
+  That means: Access to the container means access to the DB so protect that.
+- If you want to set a particular password pass the `BASEX_admin_pw` environment variable to the container and
+  the admin password will be set accordingly.
+
+If you don't set the password using the environment variable a new random password is set every time the container starts.
 ## Locking to a buildpack version
 
 Even though it's suggested to use the latest release, you may want to lock dependencies - including buildpacks - to a specific version.
