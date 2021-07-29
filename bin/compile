@@ -292,13 +292,13 @@ install_bins() {
   $BUILD_DIR/.heroku/basex/bin/basexhttpstop >/dev/null 2>&1
   sed -i 's~^WEBPATH.*~WEBPATH = /app~' $BUILD_DIR/.heroku/basex/.basex
   sed -i "s~$BUILD_DIR~/app~" $BUILD_DIR/.heroku/basex/.basex
-  if [ -d $BUILD_DIR/dba -a -z "$(ls -A $BUILD_DIR/dba)" ]
+  if [ -d $BUILD_DIR/dba -a -z "$(ls -A $BUILD_DIR/dba 2>/dev/null)" ]
   then
     cp -ra $BUILD_DIR/.heroku/basex/webapp/dba/* $BUILD_DIR/.heroku/basex/webapp/dba/.??* $BUILD_DIR/dba
   else
     rm -rf $BUILD_DIR/.heroku/basex/webapp/dba
   fi
-  if [ -d $BUILD_DIR/static -a -z "$(ls -A $BUILD_DIR/static)" ]
+  if [ -d $BUILD_DIR/static -a -z "$(ls -A $BUILD_DIR/static 2>/dev/null)" ]
   then
     cp -ra $BUILD_DIR/.heroku/basex/webapp/static/* $BUILD_DIR/.heroku/basex/webapp/static/.??* $BUILD_DIR/static
   else
