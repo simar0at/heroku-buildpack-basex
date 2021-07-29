@@ -4,5 +4,5 @@
 cat << EOF
 addons: []
 default_process_types:
-  web: /app/.heroku/basex/bin/set-basex-admin-password /app 2; /app/.heroku/basex/bin/basexhttp -h "\$PORT"
+  web: /app/.heroku/basex/bin/copy-basex-data-if-empty /app; /app/.heroku/basex/bin/set-basex-admin-password /app 2; /app/.heroku/basex/bin/basexhttp -h "\$PORT"
 EOF
