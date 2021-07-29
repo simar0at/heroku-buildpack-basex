@@ -5,7 +5,7 @@ BUILD_DIR=${1:-}
 
 if [ -z "$(ls -A $BUILD_DIR/.heroku/basex/data)" ]
 then
-  cp -rav $BUILD_DIR/.heroku/basex/data.image/* $BUILD_DIR/.heroku/basex/data.image/.??*  $BUILD_DIR/.heroku/basex/data
+  cp -ra $BUILD_DIR/.heroku/basex/data.image/.  $BUILD_DIR/.heroku/basex/data
 fi
 
 set-basex-admin-password $BUILD_DIR 2
