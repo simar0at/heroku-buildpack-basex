@@ -22,16 +22,50 @@ It's suggested that you use the latest version of the release buildpack. You can
 
 You need to use the git url. You can use the `latest` tag to make sure you always have the latest release. **The `main` branch will always have the latest buildpack updates, but it does not correspond with a numbered release.**
 
+This buildpack is meant to be used with the [gliderlabs/herokuish](https://github.com/gliderlabs/herokuish) [image](https://hub.docker.com/r/gliderlabs/herokuish/dockerfile) primarily in the [gitlab AutoDevOps Workflow](https://docs.gitlab.com/ee/topics/autodevops/customize.html#custom-buildpacks).
+Obviously this is a buildpack for the herokuish workflow. You need to set `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED` to `false`.
+
+You can emulate that workflow using just a local docker setup:
+
 ```sh
-heroku buildpacks:set https://github.com/heroku/heroku-buildpack-nodejs#latest -a my-app
+docker build --build-arg BUILDPACK_URL=https://github.com/simar0at/heroku-buildpack-basex -f ./test/gliderlabs/Dockerfile <your BaseX+nodejs based appgitla>
+``` 
+
+It may also work with the original heroku service
+
+```sh
+heroku buildpacks:set https://github.com/simar0at/heroku-buildpack-basex#latest -a my-app
 ```
+
+## Populating the database during build
+
+If you have a file `deployment/initial.sh` in your sources this will be executed during build.
+
+- You can use `basexclient` and the BaseX commands in script form or as bxs XML files to import data.
+- You can use for example git or curl to fetch the data from some repository or URL
+
+`deployment/initial.sh` is called with tha BaseX distribution base directory as parameter and the
+environment variable `BUILD_DIR` set to the directory that contains the sources during the build process.
+(Note that this is not the final location of your app so if you set up anything prefer relative paths.)
+In this phase of the build process the password for the `admin` user is still `admin`.
+
+## Testing
+
+This buildpack is meant to run tests using nodejs. This should make it especially easy to create API tests or
+end to end tests. If you want to run BaseX unit tests you can call `basexclient` and use the [TEST command](https://docs.basex.org/wiki/Commands#TEST).
+
+```sh
+source .heroku/basex/data/credentials
+basexclient -u admin -p$BASEX_admin_pw -c 'TEST /app'
+```
+
+The password of the `admin` user has been randomized. You can get it from the `.heroku/basex/data/credentials` file.
 
 ## Persistent BaseX data base
 
 If you want a persistent BaseX database across reboots of the container you have to attach a volume to
 `/app/.heroku/basex/data`
-If the attached volume is empty the initial state of BaseX
-from the build phase is copied to the mounted volume.
+If the attached volume is empty the initial state of BaseX from the build phase is copied to the mounted volume.
 
 ## The admin password for BaseX
 
