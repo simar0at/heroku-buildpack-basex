@@ -4,6 +4,12 @@ ARG BUILDPACK_URL
 ENV USER=herokuishuser
 RUN /bin/herokuish buildpack build
 
+FROM gliderlabs/herokuish as tester
+COPY . /tmp/app
+ARG BUILDPACK_URL
+ENV USER=herokuishuser
+RUN /bin/herokuish buildpack test
+
 FROM gliderlabs/herokuish
 COPY --chown=herokuishuser:herokuishuser --from=builder /app /app
 ENV PORT=5000
