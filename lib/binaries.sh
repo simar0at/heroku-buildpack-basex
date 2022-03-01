@@ -166,7 +166,7 @@ install_jdk() {
 }
 
 install_basex() {
-  local version=${1:-9.5.1}
+  local version=${1:-9.6.4}
   local install_dir=${2}
   local basexzip=BaseX${version//.}.zip
 
@@ -177,7 +177,8 @@ install_basex() {
 }
 
 install_saxon() {
-  local version=${1:-10.3}
+  local version=${1:-11.2}
   local install_dir=${2}
+  curl --retry 3 --location -s "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/4.2.0/xmlresolver-4.2.0.jar" --output "${install_dir}/lib/custom/xmlresolver-4.2.0.jar"
   curl --retry 3 --location -s "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" --output "${install_dir}/lib/custom/Saxon-HE-${version}.jar"
 }
