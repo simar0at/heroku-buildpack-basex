@@ -1,6 +1,20 @@
 # Node.js Buildpack Changelog
 
 ## main
+
+## v192 (2022-02-16)
+- Fix issue with nested yarn cache during cache restoration ([987](https://github.com/heroku/heroku-buildpack-nodejs/pull/987)
+- Fix issue with nested yarn caches and cache growth ([#985](https://github.com/heroku/heroku-buildpack-nodejs/pull/985))
+
+## v191 (2022-02-14)
+- Improve support for yarn 2+ installs ([#978](https://github.com/heroku/heroku-buildpack-nodejs/pull/978)
+
+## v190 (2022-01-31)
+- Improve support for yarn pnp without zero-install ([#978](https://github.com/heroku/heroku-buildpack-nodejs/pull/978)
+- Update default node version to 16.x ([#973](https://github.com/heroku/heroku-buildpack-nodejs/pull/973)
+- Add Yarn 1.22.1{2,3,4,5} to `inventory/yarn.toml` ([#947](https://github.com/heroku/heroku-buildpack-nodejs/pull/947))
+
+## v189 (2021-09-14)
 - Upgrade heroku_hatchet to 7.3.4 to get CI green again ([#936](https://github.com/heroku/heroku-buildpack-nodejs/pull/936))
 - Fix typo in conflicting lockfile failure message ([#901](https://github.com/heroku/heroku-buildpack-nodejs/pull/901))
 - Add support for running "npm ci" when "npm-shrinkwrap.json" is found on the project directory ([#899](https://github.com/heroku/heroku-buildpack-nodejs/pull/899))
