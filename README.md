@@ -28,7 +28,7 @@ Obviously this is a buildpack for the herokuish workflow. You need to set `AUTO_
 You can emulate that workflow using just a local docker setup:
 
 ```sh
-docker build --build-arg BUILDPACK_URL=https://github.com/simar0at/heroku-buildpack-basex -f ./test/gliderlabs/Dockerfile <your BaseX+nodejs based appgitla>
+docker build --build-arg BUILDPACK_URL=https://github.com/simar0at/heroku-buildpack-basex -f ./test/gliderlabs/Dockerfile <your BaseX+nodejs based app>
 ``` 
 
 It may also work with the original heroku service
