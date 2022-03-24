@@ -166,7 +166,7 @@ install_jdk() {
 }
 
 install_basex() {
-  local version=${1:-9.6.4}
+  local version=${1:-9.7}
   local install_dir=${2}
   local basexzip=BaseX${version//.}.zip
 
