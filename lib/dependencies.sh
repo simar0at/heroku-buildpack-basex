@@ -167,6 +167,11 @@ yarn_prune_devdependencies() {
     meta_set "skipped-prune" "true"
     return 0
   elif $YARN_2; then
+    if [ "$YARN2_SKIP_PRUNING" == "true" ]; then
+      echo "Skipping because YARN2_SKIP_PRUNING is '$YARN2_SKIP_PRUNING'"
+      meta_set "skipped-prune" "true"
+      return 0
+    fi
     cd "$build_dir" || return
     meta_set "use-heroku-yarn-prune-plugin" "$(features_get_with_blank "use-heroku-yarn-prune-plugin")"
     if [[ $(features_get_with_blank "use-heroku-yarn-prune-plugin") == "true" ]]; then
