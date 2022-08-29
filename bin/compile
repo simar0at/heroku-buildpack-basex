@@ -193,10 +193,6 @@ fi
 [ ! "$NPM_CONFIG_CACHE" ] && NPM_CONFIG_CACHE=$(mktemp -d -t npmcache.XXXXX)
 export YARN_CACHE_FOLDER NPM_CONFIG_CACHE
 
-if [[ -z "$USE_NPM_INSTALL" ]] && [[ $(features_get_with_blank "use-npm-ci") == "false" ]]; then
-  USE_NPM_INSTALL=true
-fi
-
 install_bins() {
   local node_engine npm_engine yarn_engine npm_version node_version jvm_engine jvm_version basex_engine basex_version
 
