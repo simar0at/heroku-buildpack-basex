@@ -328,6 +328,7 @@ install_bins() {
   else
     rm -rf $BUILD_DIR/.heroku/basex/webapp/static
   fi
+  set -x
   # move restxq.xqm if the source does not provides a %rest:path('') route
   grep -R '%rest:path.'\'\''.$' $BUILD_DIR/* 2>&1 > /dev/null; ROOT_REST_PATH_NOT_FOUND=$?
   if [ "x$ROOT_REST_PATH_NOT_FOUND" = "x1" -a ! -f $BUILD_DIR/restxq.xqm ]
@@ -338,6 +339,7 @@ install_bins() {
     sed -i 's~^declare namespace rest.*~~' $ROOT_PATH_RESTXQ_FILE
     rm $BUILD_DIR/.heroku/basex/webapp/restxq.xqm
   fi
+  set +x
   rm -rf $BUILD_DIR/.heroku/basex/webapp/[a-z]*
 }
 
