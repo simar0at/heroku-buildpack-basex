@@ -37,6 +37,25 @@ It may also work with the original heroku service
 heroku buildpacks:set https://github.com/simar0at/heroku-buildpack-basex#latest -a my-app
 ```
 
+## BaseX settings
+
+BaseX uses settings persisted in a `.basex` file. The following settings can be specified in `package.json` so they will be set accordingly during build:
+
+```json
+[...]
+  "basex": {
+    "parallel": "8",
+    "parserestxq": "3",
+    "cachetimeout": "3600",
+    "timeout": "30",
+    "gzip": "false",
+    "fairlock": "false",
+  }
+[...]
+```
+
+For further documentation see ["Options" in the BaseX documentation](https://docs.basex.org/wiki/Options#Global_Options).
+
 ## Populating the database during build
 
 If you have a file `deployment/initial.sh` in your sources this will be executed during build.
@@ -80,6 +99,43 @@ This buildpack does not use the standard `admin` password. Instead a randomly ge
   the admin password will be set accordingly.
 
 If you don't set the password using the environment variable a new random password is set every time the container starts.
+
+## Using root ('') in your app
+
+There is no way to have two RestXQ functions serving `''`. So unfortunately if your app source contains code for `''` it will not
+run in when you just check out the code into a `webapp` directory of an unzipped ZIP distribution of BaseX.
+Best practice is that your code usually is located in some "sub directory" `/yourapi`.
+In Kubernetes for example you can tell the ingress to automatically forward to `/yourapi`.
+
+This buildpack provides a mechanism to put a _disabled_ RestXQ function serving `''` into your repository that then for example forwards to `/yourapi`.
+The idea is to write a usually very small module that as checked into the Git repository disables the %rest:* annotations by specifying
+a custom URI for the rest prefix.
+
+```xquery
+xquery version "3.1";
+module namespace _ = "uri:_";
+declare namespace rest = "uri:rest";
+
+(:~
+ : Redirects to API path.
+ : @return rest response
+ :)
+declare
+  %rest:path('')
+function _:index-file() as item()+ {
+  <rest:response>
+    <http:response status="302">
+      <http:header name="Location" value="yourapi/"/>
+    </http:response>
+  </rest:response>
+};
+```
+
+## Admin interface and examples
+
+In the ZIP distribution of BaseX there is an admin web UI and a few examples. _These are deleted during build._
+So if you don't supply some sort of forwarding mechanism or your RestXQ code runs in `''` a dysfunctional version of the web page you get in
+the ZIP distribution of BaseX is returned in when accessing `''`.
 
 ## Locking to a buildpack version
 
