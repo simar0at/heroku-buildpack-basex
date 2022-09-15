@@ -308,7 +308,7 @@ install_bins() {
     BUILD_DIR=$BUILD_DIR $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
   else if [ -f $BUILD_DIR/deployment/initial.sh ]
   then
-    warn "$BUILD_DIR/deployment/initial.sh exists but is not executeable!"
+    warn "$BUILD_DIR/deployment/initial.sh exists but is not executeable!" https://github.com/simar0at/heroku-buildpack-basex
   fi
   fi
   cp $BP_DIR/bin/set-basex-admin-password $BUILD_DIR/.heroku/basex/bin
