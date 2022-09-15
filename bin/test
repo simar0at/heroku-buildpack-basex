@@ -9,10 +9,6 @@ set -o allexport
 source "$BUILD_DIR/.heroku/basex/data/credentials"
 set +o allexport
 
-if [ -x $BUILD_DIR/deployment/initial.sh ]; then
-  BUILD_DIR=$BUILD_DIR $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
-fi
-
 if yarn --version > /dev/null 2>&1; then
   cd "$BUILD_DIR" && yarn test
 else
