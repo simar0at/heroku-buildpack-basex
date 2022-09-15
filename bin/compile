@@ -283,7 +283,7 @@ install_bins() {
   export PATH=$PATH:$JAVA_HOME/bin
   export PORT=${PORT:-3000}
 
-  patch "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null
+  patch "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null || warn "Shenandoah GC already enabled or enabling failed"
 
   jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "([^ ]+)"/\1/g')"
   mcount "version.jvm.$jvm_version"
@@ -301,8 +301,15 @@ install_bins() {
   meta_set "basex-version" "$basex_version"
   echo " BaseX Version: $basex_version"
   popd >/dev/null
-  if [ -x $BUILD_DIR/deployment/initial.sh ]; then
+  
+  if [ -x $BUILD_DIR/deployment/initial.sh ]
+  then
+    echo "Running BaseX initialization script"
     BUILD_DIR=$BUILD_DIR $BUILD_DIR/deployment/initial.sh $BUILD_DIR/.heroku/basex
+  else if [ -f $BUILD_DIR/deployment/initial.sh ]
+  then
+    warn "$BUILD_DIR/deployment/initial.sh exists but is not executeable!"
+  fi
   fi
   cp $BP_DIR/bin/set-basex-admin-password $BUILD_DIR/.heroku/basex/bin
   cp $BP_DIR/bin/setup-and-start-basexhttp $BUILD_DIR/.heroku/basex/bin
