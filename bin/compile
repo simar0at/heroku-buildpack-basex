@@ -283,7 +283,8 @@ install_bins() {
   export PATH=$PATH:$JAVA_HOME/bin
   export PORT=${PORT:-3000}
 
-  patch "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null || warn "Shenandoah GC already enabled or enabling failed"
+  patch -Rf "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null || true
+  patch -f "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null
 
   jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "([^ ]+)"/\1/g')"
   mcount "version.jvm.$jvm_version"
