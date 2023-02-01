@@ -250,7 +250,7 @@ install_bins() {
   
   if [ -n "$saxon_engine" ]; then
     meta_set "build-step" "install-saxon"
-    monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex" $CACHE_DIR
+    monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex/lib/custom" $CACHE_DIR
   fi
 
   node_version="$(node --version)"

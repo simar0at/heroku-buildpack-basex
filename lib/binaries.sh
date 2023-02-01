@@ -182,20 +182,36 @@ install_jdk() {
   mtime "jvm.install.time" "${start}"
 }
 
+curl_if_not_exists_and_cp() {
+  local file=${1}
+  local url=${2}
+  local dest=${3}
+  if [ ! -f "${file}" ]
+  then curl --retry 3 --location -s "${url}" --output "${file}"
+  fi
+  if [ "x${dest}" != "x" ]
+  then cp "${file}" "${dest}"
+  fi
+}
+
 install_basex() {
   local version=${1:-9.7.3}
   local install_dir=${2}
+  local cache_dir=${3}
   local basexzip=BaseX${version//.}.zip
 
   echo "-----> Downloading and installing BaseX $version..."
-  curl --retry 3 --location -s "https://files.basex.org/releases/${version}/${basexzip}" --output "/tmp/${basexzip}"
+  mkdir -p "${cache_dir}/basex/"
+  curl_if_not_exists_and_cp "${cache_dir}/basex/${basexzip}" "https://files.basex.org/releases/${version}/${basexzip}"
   rm -rf "${install_dir}/basex"
-  unzip -q -d "${install_dir}" "/tmp/${basexzip}" && echo -n "Installed"
+  unzip -q -d "${install_dir}" "${cache_dir}/basex/${basexzip}" && echo -n "Installed"
 }
 
 install_saxon() {
   local version=${1:-11.3}
   local install_dir=${2}
-  curl --retry 3 --location -s "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/4.3.0/xmlresolver-4.3.0.jar" --output "${install_dir}/lib/custom/xmlresolver-4.3.0.jar"
-  curl --retry 3 --location -s "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" --output "${install_dir}/lib/custom/Saxon-HE-${version}.jar"
+  local cache_dir=${3}
+  mkdir -p "${cache_dir}/saxon/"
+  curl_if_not_exists_and_cp "${cache_dir}/saxon/xmlresolver-4.3.0.jar" "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/4.3.0/xmlresolver-4.3.0.jar" "${install_dir}/xmlresolver-4.3.0.jar"
+  curl_if_not_exists_and_cp "${cache_dir}/saxon/Saxon-HE-${version}.jar" "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" "${install_dir}/Saxon-HE-${version}.jar" 
 }
