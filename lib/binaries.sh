@@ -211,7 +211,8 @@ install_saxon() {
   local version=${1:-11.3}
   local install_dir=${2}
   local cache_dir=${3}
+  local xres_ver="4.6.4"
   mkdir -p "${cache_dir}/saxon/"
-  curl_if_not_exists_and_cp "${cache_dir}/saxon/xmlresolver-4.3.0.jar" "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/4.3.0/xmlresolver-4.3.0.jar" "${install_dir}/xmlresolver-4.3.0.jar"
+  curl_if_not_exists_and_cp "${cache_dir}/saxon/xmlresolver-${xres_ver}.jar" "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/${xres_ver}/xmlresolver-${xres_ver}.jar" "${install_dir}/xmlresolver-${xres_ver}.jar"
   curl_if_not_exists_and_cp "${cache_dir}/saxon/Saxon-HE-${version}.jar" "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" "${install_dir}/Saxon-HE-${version}.jar" 
 }
