@@ -2,4 +2,5 @@
 .DS_Store
 repos/*
 .idea
+.build
 patches*
