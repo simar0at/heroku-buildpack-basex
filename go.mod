@@ -4,5 +4,5 @@ go 1.14
 
 require (
 	github.com/jmorrell/semver v3.5.1+incompatible
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 )
