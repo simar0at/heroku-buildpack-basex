@@ -582,3 +582,4 @@ Disables cache restoration if node_modules already exists.
 Accepts `cacheDirectories` array in package.json to override default `node_modules` caching.
 
 - Documented at https://devcenter.heroku.com/articles/nodejs-support#cache-behavior
+- Added yarn version 4.0.0-rc.43, 3.5.1.
