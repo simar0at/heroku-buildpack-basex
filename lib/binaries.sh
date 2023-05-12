@@ -204,7 +204,7 @@ install_basex() {
   mkdir -p "${cache_dir}/basex/"
   curl_if_not_exists_and_cp "${cache_dir}/basex/${basexzip}" "https://files.basex.org/releases/${version}/${basexzip}"
   rm -rf "${install_dir}/basex"
-  unzip -q -d "${install_dir}" "${cache_dir}/basex/${basexzip}" && echo -n "Installed"
+  unzip -q -d "${install_dir}" "${cache_dir}/basex/${basexzip}"
 }
 
 install_saxon() {
