@@ -2,6 +2,69 @@
 
 ## main
 
+## v215 (2023-06-21)
+
+- Added Node.js version 20.3.1, 18.16.1, 16.20.1.
+
+## v214 (2023-06-20)
+
+- Added Yarn version 4.0.0-rc.45.
+- Added Node.js version 20.3.0.
+
+## v213 (2023-05-24)
+
+- Added node version 20.2.0.
+- Added yarn version 4.0.0-rc.44.
+
+## v212 (2023-05-09)
+
+- Added node version 20.1.0.
+- Added yarn version 4.0.0-rc.43, 3.5.1.
+- Drop all support and references to the now end-of-life heroku-18.
+
+## v211 (2023-04-20)
+
+- Add metrics and tests for Node.js 20.x line
+
+## v210 (2023-04-20)
+ 
+- Added node version 20.0.0.
+
+## v209 (2023-04-17)
+
+- Added node version 18.16.0.
+
+## v208 (2023-04-11)
+
+- Added node version 19.9.0.
+
+## v207 (2023-04-03)
+
+- Added node version 16.20.0.
+- Added yarn version 4.0.0-rc.42, 4.0.0-rc.41.
+
+## v206 (2023-03-24)
+
+- Added node versions 19.8.0, 19.8.1
+- Added yarn version 3.5.0
+
+## v205 (2023-03-13)
+
+- Added node version 18.15.0
+- Added yarn version 4.0.0-rc.40
+
+## v204 (2023-03-03)
+
+- Switch to inventory-based Node.js and Yarn version resolver ([#1061](https://github.com/heroku/heroku-buildpack-nodejs/pull/1061))
+
+## v203 (2023-02-10)
+
+- Allow yarn version selection for yarn berry projects ([#1060](https://github.com/heroku/heroku-buildpack-nodejs/pull/1060))
+
+## v202 (2022-11-03)
+
+- Update go to 1.19 and recompile resolve-version ([#1050](https://github.com/heroku/heroku-buildpack-nodejs/pull/1050))
+
 ## v201 (2022-10-19)
 
 - Add metrics and tests for Node.js 19.x line ([#1046](https://github.com/heroku/heroku-buildpack-nodejs/pull/1046))
@@ -21,7 +84,18 @@
 - `jq` is no longer installed by the buildpack([#1016](https://github.com/heroku/heroku-buildpack-nodejs/pull/1016))
 - Switch away from deprecated path-based S3 URLs ([#1013](https://github.com/heroku/heroku-buildpack-nodejs/pull/1013))
 
-## v195 (2022-04-12)
+## v197 (2022-06-07)
+- Drop the `yarn-native-cache` feature flag ([#1004](https://github.com/heroku/heroku-buildpack-nodejs/pull/1004))
+- Fix for `npm ci` caching ([#1009](https://github.com/heroku/heroku-buildpack-nodejs/pull/1009))
+- Fix skip pruning behavior with Yarn 2 ([#1008](https://github.com/heroku/heroku-buildpack-nodejs/pull/1008))
+
+## v196 (2022-05-31)
+- Add metrics plugin for Node 17 and 18 ([#1002](https://github.com/heroku/heroku-buildpack-nodejs/pull/1002))
+- Add warning message for Node 18+ incompatibility with heroku-18 ([#1002](https://github.com/heroku/heroku-buildpack-nodejs/pull/1002))
+- Enable Yarn 2 `devDependency` pruning using a custom plugin for all customers ([#1001](https://github.com/heroku/heroku-buildpack-nodejs/pull/1001))
+- Test against Heroku-22 ([#1003](https://github.com/heroku/heroku-buildpack-nodejs/pull/1003))
+
+## v195 (2022-04-13)
 - Enable Yarn 2 `devDependency` pruning using a custom plugin for 20% of customers ([#999](https://github.com/heroku/heroku-buildpack-nodejs/pull/999))
 - Set xtrace mode in buildpack when BUILDPACK_XTRACE environment variable is set ([#925](https://github.com/heroku/heroku-buildpack-nodejs/pull/925))
 
@@ -582,7 +656,3 @@ Disables cache restoration if node_modules already exists.
 Accepts `cacheDirectories` array in package.json to override default `node_modules` caching.
 
 - Documented at https://devcenter.heroku.com/articles/nodejs-support#cache-behavior
-- Added yarn version 4.0.0-rc.43, 3.5.1.
-- Added node version 20.2.0.
-- Added yarn version 4.0.0-rc.44.
-
