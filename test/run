@@ -852,6 +852,13 @@ testNpmVersionSpecific() {
   assertCapturedSuccess
 }
 
+testNpmVersionIncompatible() {
+  compile "npm-version-incompat"
+  assertCaptured "Unable to install npm 10.x"
+  assertCaptured "Is npm 10.x compatible with this Node.js version?"
+  assertCapturedError
+}
+
 testFailingBuild() {
   compile "failing-build"
   assertCaptured "Build failed"
@@ -1151,7 +1158,7 @@ testNodeEnvNpmConfigProductionFalse() {
   assertCaptured "preinstall: production"
   assertCaptured "postinstall: production"
   assertCaptured "heroku-postbuild: production"
-  assertCapturedSuccess
+  assertEquals "Expected successful exit code" "0" "${RETURN}"
 }
 
 # Avoid this issue
