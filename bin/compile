@@ -247,7 +247,7 @@ install_bins() {
     meta_set "build-step" "install-saxon"
     monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex/lib/custom" $CACHE_DIR
   fi
-set -x
+
   node_version="$(node --version)"
   mcount "version.node.$node_version"
   meta_set "node-version" "$node_version"
@@ -277,9 +277,9 @@ set -x
   export JAVA_HOME=$BUILD_DIR/.jdk
   export PATH=$PATH:$JAVA_HOME/bin
   export PORT=${PORT:-3000}
-
+set -x
   patch -Rf "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null || true
-  patch -f "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null
+  patch -f "$BUILD_DIR/.profile.d/jvmcommon.sh" "$BP_DIR/lib/jvmcommon.sh.patch" 2>&1 > /dev/null || true
 
   jvm_version="$(java -version 2>&1 | grep version | sed -r 's/openjdk version "([^ ]+)"/\1/g')"
   mcount "version.jvm.$jvm_version"
