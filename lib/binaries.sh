@@ -166,7 +166,6 @@ curl_if_not_exists_and_cp() {
 }
 
 install_basex() {
-set -x
   local version=${1:-9.7.3}
   local install_dir=${2}
   local cache_dir=${3}
@@ -177,17 +176,14 @@ set -x
   curl_if_not_exists_and_cp "${cache_dir}/basex/${basexzip}" "https://files.basex.org/releases/${version}/${basexzip}"
   rm -rf "${install_dir}/basex"
   unzip -q -d "${install_dir}" "${cache_dir}/basex/${basexzip}"
-set +x
 }
 
 install_saxon() {
-set -x
   local version=${1:-12.4}
   local install_dir=${2}
   local cache_dir=${3}
   local xres_ver="5.2.2"
   mkdir -p "${cache_dir}/saxon/"
   curl_if_not_exists_and_cp "${cache_dir}/saxon/xmlresolver-${xres_ver}.jar" "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/${xres_ver}/xmlresolver-${xres_ver}.jar" "${install_dir}/xmlresolver-${xres_ver}.jar"
-  curl_if_not_exists_and_cp "${cache_dir}/saxon/Saxon-HE-${version}.jar" "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" "${install_dir}/Saxon-HE-${version}.jar" 
-set +x
+  curl_if_not_exists_and_cp "${cache_dir}/saxon/Saxon-HE-${version}.jar" "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" "${install_dir}/Saxon-HE-${version}.jar"
 }

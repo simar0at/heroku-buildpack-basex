@@ -247,7 +247,7 @@ install_bins() {
     meta_set "build-step" "install-saxon"
     monitor "install-saxon-binary" install_saxon "$saxon_engine" "$BUILD_DIR/.heroku/basex/lib/custom" $CACHE_DIR
   fi
-
+set -x
   node_version="$(node --version)"
   mcount "version.node.$node_version"
   meta_set "node-version" "$node_version"
