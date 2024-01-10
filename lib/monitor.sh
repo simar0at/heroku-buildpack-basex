@@ -6,8 +6,6 @@ monitor_memory_usage() {
   # drop the first argument, and leave other arguments in place
   shift
 
-  export TRACE=${TRACE:-false}
-  echo "TRACE=$TRACE"
   # Run the command in the background
   "${@:-}" &
 
