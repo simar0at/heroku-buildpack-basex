@@ -1,12 +1,16 @@
---- jvmcommon.sh.orig   2021-07-28 15:20:16.268279233 +0000
-+++ jvmcommon.sh        2021-07-28 15:31:51.522736687 +0000
-@@ -3,20 +3,22 @@
+--- jvmcommon.sh.orig
++++ jvmcommon.sh
+@@ -3,18 +3,18 @@
  calculate_java_memory_opts() {
    local opts=${1:-""}
  
 -  limit=$(ulimit -u)
 +  limit=$(cat /sys/fs/cgroup/memory/memory.limit_in_bytes)
    case $limit in
+-  256) # Eco, Basic, 1X: memory.limit_in_bytes=536870912
++  536870912) # Eco, Basic, 1X: memory.limit_in_bytes=536870912
+     echo "$opts -Xmx300m -Xss512k -XX:CICompilerCount=2"
+     ;;
 -  512) # 2X, private-s: memory.limit_in_bytes=1073741824
 +  1073741824) # 2X, private-s: memory.limit_in_bytes=1073741824
      echo "$opts -Xmx671m -XX:CICompilerCount=2"
@@ -19,16 +23,17 @@
 +  15032385536) # perf-l, private-l: memory.limit_in_bytes=15032385536
      echo "$opts -Xmx12g"
      ;;
--  *) # Free, Hobby, 1X: memory.limit_in_bytes=536870912
-+  536870912) # Free, Hobby, 1X: memory.limit_in_bytes=536870912
-     echo "$opts -Xmx300m -Xss512k -XX:CICompilerCount=2"
-     ;;
-+  *) # Some other environment
+   *)
+@@ -22,7 +22,7 @@ calculate_java_memory_opts() {
+     # This is more consistent with the Heroku defaults for other dyno types. For example, a 32GB dyno would only use
+     # 8GB of heap with the 25% default, but performance-l with 14GB of memory would get 12GB max heap size as
+     # explicitly configured.
+-    echo "$opts -XX:MaxRAMPercentage=80.0"
 +    echo "$opts"
+     ;;
    esac
  }
- 
-@@ -35,9 +37,9 @@
+@@ -42,9 +42,9 @@ elif [[ -d "$JAVA_HOME/lib/server" ]]; then
  fi
  
  if [ -f "$JAVA_HOME/release" ] && grep -q '^JAVA_VERSION="1[0-9]' "$JAVA_HOME/release"; then
@@ -40,4 +45,3 @@
  fi
  
  if echo "${JAVA_OPTS:-}" | grep -q "\-Xmx"; then
- 
