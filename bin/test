@@ -2,6 +2,13 @@
 BUILD_DIR=${1:-}
 PORT=${PORT:-8984}
 
+if [ -z "$(ls -A $BUILD_DIR/.heroku/basex/data 2>/dev/null)" ]
+then
+  cp -ra "$BUILD_DIR/.heroku/basex/data.image/."  "$BUILD_DIR/.heroku/basex/data"
+else
+  ln -s data.image "$BUILD_DIR/.heroku/basex/data"
+fi
+
 bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" -h "$PORT" &
 (curl --connect-timeout 5 --max-time 10 --retry 3 --retry-delay 0 --retry-max-time 40 --retry-connrefused 0 -s -D - "http://localhost:$PORT" -o /dev/null | head -n1 | grep -q '\([23]0[0-9]\)') || (pkill -TERM java; exit 1)
 

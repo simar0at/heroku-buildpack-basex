@@ -289,6 +289,7 @@ install_bins() {
   
   pushd "$BUILD_DIR/.heroku/basex/bin" >/dev/null
   mv "$BUILD_DIR/.heroku/basex/data" "$BUILD_DIR/.heroku/basex/data.image"
+  ln -s data.image "$BUILD_DIR/.heroku/basex/data"
   BASEX_admin_pw="${BASEX_admin_pw:-$(openssl rand -base64 12)}"
   echo "BASEX_admin_pw=\"$BASEX_admin_pw\"" > "$BUILD_DIR/.heroku/basex/data/credentials"
   echo "CYPRESS_BASEX_admin_pw=\"$BASEX_admin_pw\"" >> "$BUILD_DIR/.heroku/basex/data/credentials"
@@ -357,6 +358,7 @@ install_bins() {
     rm $BUILD_DIR/.heroku/basex/webapp/restxq.xqm
   fi
   rm -rf $BUILD_DIR/.heroku/basex/webapp/[a-z]*
+  rm "$BUILD_DIR/.heroku/basex/data"
 }
 
 header "Installing binaries" | output "$LOG_FILE"
