@@ -328,17 +328,23 @@ install_bins() {
   sed -i "s~^CACHETIMEOUT.*~CACHETIMEOUT = ${basex_cachetimeout:-3600}~" $BUILD_DIR/.heroku/basex/.basex
   sed -i "s~^TIMEOUT.*~TIMEOUT = ${basex_timeout:-30}~" $BUILD_DIR/.heroku/basex/.basex
   sed -i "s~^GZIP.*~GZIP = ${basex_gzip:-false}~" $BUILD_DIR/.heroku/basex/.basex
-  if [ -d $BUILD_DIR/dba -a -z "$(ls -A $BUILD_DIR/dba 2>/dev/null)" ]
+  if [ -d $BUILD_DIR/dba -a -z "$(ls -A -I.git* $BUILD_DIR/dba 2>/dev/null)" ]
   then
     cp -ra $BUILD_DIR/.heroku/basex/webapp/dba/. $BUILD_DIR/dba
   else
     rm -rf $BUILD_DIR/.heroku/basex/webapp/dba
   fi
-  if [ -d $BUILD_DIR/static -a -z "$(ls -A $BUILD_DIR/static 2>/dev/null)" ]
+  if [ -d $BUILD_DIR/static -a -z "$(ls -A -I.git* $BUILD_DIR/static 2>/dev/null)" ]
   then
     cp -ra $BUILD_DIR/.heroku/basex/webapp/static/. $BUILD_DIR/static
   else
     rm -rf $BUILD_DIR/.heroku/basex/webapp/static
+  fi
+  if [ -d $BUILD_DIR/WEB-INF ]
+  then
+    rm -rf $BUILD_DIR/.heroku/basex/webapp/WEB-INF
+  else
+    cp -ra $BUILD_DIR/.heroku/basex/webapp/WEB-INF/. $BUILD_DIR/WEB-INF   
   fi
   # move restxq.xqm if the source does not provides a %rest:path('') route
   ROOT_REST_PATH_NOT_FOUND='0'
