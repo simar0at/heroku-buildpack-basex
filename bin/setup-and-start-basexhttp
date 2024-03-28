@@ -3,9 +3,11 @@
 
 BUILD_DIR=${1:-}
 
-if [ -z "$(ls -A $BUILD_DIR/.heroku/basex/data)" ]
+if [ -z "$(ls -A $BUILD_DIR/.heroku/basex/data 2>/dev/null)" ]
 then
   cp -ra $BUILD_DIR/.heroku/basex/data.image/.  $BUILD_DIR/.heroku/basex/data
+else
+  ln -s data.image $BUILD_DIR/.heroku/basex/data
 fi
 
 set-basex-admin-password $BUILD_DIR 2
