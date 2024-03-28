@@ -5,8 +5,6 @@ PORT=${PORT:-8984}
 if [ -z "$(ls -A $BUILD_DIR/.heroku/basex/data 2>/dev/null)" ]
 then
   cp -ra "$BUILD_DIR/.heroku/basex/data.image/."  "$BUILD_DIR/.heroku/basex/data"
-else
-  ln -s data.image "$BUILD_DIR/.heroku/basex/data"
 fi
 
 bash "$BUILD_DIR/.heroku/basex/bin/basexhttp" -h "$PORT" &
