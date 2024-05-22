@@ -211,6 +211,7 @@ install_bins() {
   basex_cachetimeout=$(read_json "$BUILD_DIR/package.json" ".basex.cachetimeout")
   basex_timeout=$(read_json "$BUILD_DIR/package.json" ".basex.timeout")
   basex_gzip=$(read_json "$BUILD_DIR/package.json" ".basex.gzip")
+  basex_ignorecert=$(read_json "$BUILD_DIR/package.json" ".basex.ignorecert")
 
   meta_set "node-version-request" "$node_engine"
   meta_set "npm-version-request" "$npm_engine"
@@ -328,6 +329,7 @@ install_bins() {
   sed -i "s~^CACHETIMEOUT.*~CACHETIMEOUT = ${basex_cachetimeout:-3600}~" $BUILD_DIR/.heroku/basex/.basex
   sed -i "s~^TIMEOUT.*~TIMEOUT = ${basex_timeout:-30}~" $BUILD_DIR/.heroku/basex/.basex
   sed -i "s~^GZIP.*~GZIP = ${basex_gzip:-false}~" $BUILD_DIR/.heroku/basex/.basex
+  sed -i "s~^IGNORECERT.*~IGNORECERT = ${basex_ignorecert:-false}~" $BUILD_DIR/.heroku/basex/.basex
   if [ -d $BUILD_DIR/dba -a -z "$(ls -A -I.git* $BUILD_DIR/dba 2>/dev/null)" ]
   then
     cp -ra $BUILD_DIR/.heroku/basex/webapp/dba/. $BUILD_DIR/dba
