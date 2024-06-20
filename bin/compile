@@ -274,6 +274,7 @@ install_bins() {
   monitor "install-npm-binary" install_npm "$npm_engine" "$BUILD_DIR/.heroku/node" $NPM_LOCK
   
   meta_set "build-step" "install-jvm"
+  echo "java.runtime.version = $jvm_engine" >"${BUILD_DIR}/system.properties"
   monitor "install-jvm-binary" install_jdk "$jvm_engine" "$BUILD_DIR" $CACHE_DIR
   
   meta_set "build-step" "install-basex"
