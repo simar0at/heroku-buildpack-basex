@@ -355,7 +355,7 @@ install_bins() {
   pushd "$BUILD_DIR/.heroku/basex/bin" >/dev/null
   mv "$BUILD_DIR/.heroku/basex/data" "$BUILD_DIR/.heroku/basex/data.image"
   ln -s data.image "$BUILD_DIR/.heroku/basex/data"
-  BASEX_admin_pw="${BASEX_admin_pw:-$(openssl rand -base64 12 | | tr -d '+/=')}"
+  BASEX_admin_pw="${BASEX_admin_pw:-$(openssl rand -base64 12 | tr -d '+/=')}"
   echo "BASEX_admin_pw=\"$BASEX_admin_pw\"" > "$BUILD_DIR/.heroku/basex/data/credentials"
   echo "CYPRESS_BASEX_admin_pw=\"$BASEX_admin_pw\"" >> "$BUILD_DIR/.heroku/basex/data/credentials"
   echo "BaseX admin password is \"$BASEX_admin_pw\""
