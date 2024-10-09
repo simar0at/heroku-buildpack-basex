@@ -359,6 +359,8 @@ install_bins() {
   echo "BASEX_admin_pw=\"$BASEX_admin_pw\"" > "$BUILD_DIR/.heroku/basex/data/credentials"
   echo "CYPRESS_BASEX_admin_pw=\"$BASEX_admin_pw\"" >> "$BUILD_DIR/.heroku/basex/data/credentials"
   echo "BaseX admin password is \"$BASEX_admin_pw\""
+  echo "Unsetting \"$BASEX_JVM\" while building"
+  unset BASEX_JVM
   bash "$BUILD_DIR/.heroku/basex/bin/basexserver" -c "PASSWORD $BASEX_admin_pw" >/dev/null 2>&1 &
   sleep 0.2
   bash "$BUILD_DIR/.heroku/basex/bin/basexserver" stop >/dev/null 2>&1 &
