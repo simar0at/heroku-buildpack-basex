@@ -1775,6 +1775,12 @@ testCorepackInvalidVersion() {
   assertCapturedError
 }
 
+testCorepackNpmRegistryKeyFix() {
+  compile "corepack-integrity-keys"
+  assertCaptured "Installing pnpm@10.1.0 via corepack 0.30.0"
+  assertCapturedSuccess
+}
+
 # PNPM
 
 testPnpm7Pnp() {
