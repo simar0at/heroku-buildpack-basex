@@ -1,5 +1,14 @@
 --- jvmcommon.sh.old	2025-02-10 18:41:48.128537300 +0100
-+++ jvmcommon.sh	2025-02-10 18:43:18.960393100 +0100
++++ jvmcommon.sh	2025-02-10 19:00:13.792629800 +0100
+@@ -41,7 +41,7 @@
+ 	# This is more consistent with the Heroku defaults for other dyno types. For example, a 32GB dyno would only use
+ 	# 8GB of heap with the 25% default, but performance-l with 14GB of memory would get 12GB max heap size as
+ 	# explicitly configured.
+-	echo "$opts -XX:MaxRAMPercentage=80.0"
++	echo "$opts"
+ }
+ 
+ if [[ -d $HOME/.jdk ]]; then
 @@ -59,7 +59,7 @@
  fi
  
