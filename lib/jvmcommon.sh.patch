@@ -1,23 +1,11 @@
---- jvmcommon.sh.orig
-+++ jvmcommon.sh
-@@ -29,7 +29,7 @@ calculate_java_memory_opts() {
-   # This is more consistent with the Heroku defaults for other dyno types. For example, a 32GB dyno would only use
-   # 8GB of heap with the 25% default, but performance-l with 14GB of memory would get 12GB max heap size as
-   # explicitly configured.
--  echo "$opts -XX:MaxRAMPercentage=80.0"
-+  echo "$opts"
- }
- 
- if [[ -d $HOME/.jdk ]]; then
-@@ -47,9 +47,9 @@ elif [[ -d "$JAVA_HOME/lib/server" ]]; then
+--- jvmcommon.sh.old	2025-02-10 18:41:48.128537300 +0100
++++ jvmcommon.sh	2025-02-10 18:43:18.960393100 +0100
+@@ -59,7 +59,7 @@
  fi
  
  if [ -f "$JAVA_HOME/release" ] && grep -q '^JAVA_VERSION="1[0-9]' "$JAVA_HOME/release"; then
--  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport")"
-+  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError")"
+-	default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport")"
++	default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UseContainerSupport -XX:+UseShenandoahGC -XX:ShenandoahGCHeuristics=compact -XX:+UseStringDeduplication -XX:+ExitOnOutOfMemoryError")"
  else
--  default_java_mem_opts="$(calculate_java_memory_opts | sed 's/^ //')"
-+  default_java_mem_opts="$(calculate_java_memory_opts "-XX:+UnlockExperimentalVMOptions -XX:+UseContainerSupport -XX:+UseG1GC -XX:+UseStringDeduplication" | sed 's/^ //')"
+ 	default_java_mem_opts="$(calculate_java_memory_opts | sed 's/^ //')"
  fi
- 
- if echo "${JAVA_OPTS:-}" | grep -q "\-Xmx"; then
