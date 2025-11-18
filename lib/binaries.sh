@@ -31,9 +31,7 @@ install_yarn() {
     echo "Downloading and installing yarn from $url"
   else
     echo "Downloading and installing yarn ($version)"
-    major_version=$(echo "$version" | sed --regexp-extended 's/^[^0-9]+//' | cut -d "." -f 1)
-    # Yarn 2+ (aka: "berry") is hosted under a different npm package.
-    package_name=$([ "$major_version" -ge 2 ] && echo "@yarnpkg/cli-dist" || echo "yarn")
+    package_name=$(determine_yarn_package_name "$version")
     if ! suppress_output npm install --unsafe-perm --quiet --no-audit --no-progress -g "$package_name@$version"; then
       echo "Unable to install yarn $version. " \
         "Does yarn $version exist? (https://help.heroku.com/8MEL050H) " \
@@ -66,7 +64,7 @@ install_nodejs() {
     echo "Resolving node version $version..."
     resolve_result=$(resolve node "$version" || echo "failed")
 
-    read -r number url < <(echo "$resolve_result")
+    read -r number url checksum_name digest < <(echo "$resolve_result")
 
     if [[ "$resolve_result" == "failed" ]]; then
       fail_bin_install node "$version"
@@ -79,11 +77,24 @@ install_nodejs() {
     fi
   fi
 
-  code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 --retry-connrefused --connect-timeout 5 -o /tmp/node.tar.gz --write-out "%{http_code}")
+  output_file="/tmp/node.tar.gz"
+  code=$(curl "$url" -L --silent --fail --retry 5 --retry-max-time 15 --retry-connrefused --connect-timeout 5 -o "$output_file" --write-out "%{http_code}")
 
   if [ "$code" != "200" ]; then
     echo "Unable to download node: $code" && false
   fi
+
+  case "$checksum_name" in
+    "sha256")
+      if ! echo "$digest $output_file" | sha256sum --check --status; then
+        echo "Checksum validation failed for Node.js $number - $checksum_name:$digest" && false
+      fi
+      ;;
+    *)
+      echo "Unsupported checksum for Node.js $number - $checksum_name:$digest" && false
+      ;;
+  esac
+
   rm -rf "${dir:?}"/*
   tar xzf /tmp/node.tar.gz --strip-components 1 -C "$dir"
   chmod +x "$dir"/bin/*
@@ -284,4 +295,35 @@ install_saxon() {
   mkdir -p "${cache_dir}/saxon/"
   curl_if_not_exists_and_cp "${cache_dir}/saxon/xmlresolver-${xres_ver}.jar" "https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/${xres_ver}/xmlresolver-${xres_ver}.jar" "${install_dir}/xmlresolver-${xres_ver}.jar"
   curl_if_not_exists_and_cp "${cache_dir}/saxon/Saxon-HE-${version}.jar" "https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/${version}/Saxon-HE-${version}.jar" "${install_dir}/Saxon-HE-${version}.jar"
+}
+
+# Yarn 2+ (aka: "berry") is hosted under a different npm package so we need to do some
+# extra checking to determine the correct package name.
+determine_yarn_package_name() {
+  local NPM_INFO_OUTPUT
+  NPM_INFO_OUTPUT=$(mktemp)
+
+  trap "rm -rf '$NPM_INFO_OUTPUT' >/dev/null" RETURN
+
+  npm info "yarn@$version" version >"$NPM_INFO_OUTPUT" 2>&1
+  exit_code=$?
+
+  if [[ $exit_code -eq 0 ]]; then
+    # There are a couple of 2.x versions in the yarn package list, but that should be okay
+    # since we're using npm to install the binaries. The previous inventory resolver never
+    # handled this case well.
+    echo "yarn"
+    return 0
+  fi
+
+  # If nothing is returned for the yarn package list for the given version, it must be @yarnpkg/cli-dist
+  if cat "$NPM_INFO_OUTPUT" | grep -q "E404"; then
+    echo "@yarnpkg/cli-dist"
+    return 0
+  fi
+
+  # Handle unexpected output
+  echo "Unable to resolve yarn version '$version' via npm info"
+  cat "$NPM_INFO_OUTPUT"
+  return "$exit_code"
 }
