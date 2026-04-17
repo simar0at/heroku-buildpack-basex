@@ -28,7 +28,7 @@ jobs:
         run: "generate_inventory node > inventory/node.toml"
       - name: Update Changelog
         run: echo "${{ steps.set-diff-msg.outputs.msg }}" | xargs -r -I '{}' perl -i -p -e 's/## \[Unreleased\]\s+/## \[Unreleased\]\n\n{}/' CHANGELOG.md
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: generate-token
         with:
           app-id: ${{ vars.LINGUIST_GH_APP_ID }}
